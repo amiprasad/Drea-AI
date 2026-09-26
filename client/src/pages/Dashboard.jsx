@@ -149,13 +149,11 @@ const Dashboard = () => {
               <select value={typeFilter}
                 onChange={(event) => setTypeFilter(event.target.value)}
                 className="px-3 py-2 font-medium text-gray-800 bg-[#e3cfe8] border border-[#9852aa] rounded-lg cursor-pointer">
-                <div className='m-2'>
-                  <option value="all">All types</option>
-                  <option value="image">Images</option>
-                  <option value="article">Articles</option>
-                  <option value="blog-title">Blog Titles</option>
-                  <option value="resume-review">Resume Reviews</option>
-                </div>
+                <option value="all">All types</option>
+                <option value="image">Images</option>
+                <option value="article">Articles</option>
+                <option value="blog-title">Blog Titles</option>
+                <option value="resume-review">Resume Reviews</option>
               </select>
             </div>
 
