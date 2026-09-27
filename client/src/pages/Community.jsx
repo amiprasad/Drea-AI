@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Heart ,Trash2, Download} from 'lucide-react'
-import { dummyPublishedCreationData } from '../assets/assets'
+import { Heart , Download} from 'lucide-react'
 import { useUser } from '@clerk/react-router'
 import { useAuth } from '@clerk/react-router';
 import toast from 'react-hot-toast';
-import Markdown from 'react-markdown';
 import axios from 'axios'
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL; 
@@ -14,8 +12,6 @@ const Community = () => {
   const [creations, setCreations] = useState([])
   const {user} = useUser()
   const [loading, setLoading] = useState(true)
-  const [selectedIds, setSelectedIds] = useState([])
-  const [selectionMode, setSelectionMode] = useState(false)
   const [pendingLikeIds, setPendingLikeIds] = useState([])
 
   const { getToken } = useAuth()
@@ -102,92 +98,23 @@ const Community = () => {
     }
   }
 
-  const toggleSelected = (id) => {
-    setSelectedIds((current) =>
-      current.includes(id)
-        ? current.filter((selectedId) => selectedId !== id)
-        : [...current, id]
-    )
-  }
-
-  const deleteCreations = async (ids) => {
-    try {
-      const { data } = await axios.delete('/api/user/delete-creations', {
-        data: { ids },
-        headers: { Authorization: `Bearer ${await getToken()}` }
-      })
-
-      if (data.success) {
-        toast.success(data.message)
-        setSelectedIds([])
-        setSelectionMode(false)
-        fetchCreations()
-      } else {
-        toast.error(data.message)
-      }
-    } catch (error) {
-      toast.error(error.message)
-    }
-  }
-
   useEffect(()=>{
     if (user){
       fetchCreations()
     }
   },[user])
 
-  const ownCreationIds = creations .filter((creation) => creation.user_id === user?.id).map((creation) => String(creation.id))
-
-  const allSelected = ownCreationIds.length > 0 && ownCreationIds.every((id) => selectedIds.includes(id))
-
   return !loading ?(
 
     <div className='flex-1 h-full flex flex-col gap-3 bg-[#fff7ff] text-slate-700 p-6'>
       <div className="flex items-center gap-3">
         <p className="font-semibold">Creations</p>
-        <input
-          type="checkbox"
-          checked={allSelected}
-          onChange={(event) => {
-            const enabled = event.target.checked
-            setSelectionMode(enabled)
-            setSelectedIds(enabled ? ownCreationIds : [])
-          }} className='cursor-pointer'
-        />
 
-        {selectionMode && (
-          <button
-            type="button"
-            disabled={selectedIds.length === 0}
-            onClick={() => deleteCreations(selectedIds)}
-            className="text-fuchsia-800 disabled:opacity-40 cursor-pointer"
-          >
-            <Trash2 size={18} />
-          </button>
-        )}
       </div>
       <div className='w-full h-full p-4 bg-[#faecff] rounded-lg border border-[#db9bea96] overflow-y-scroll'>
         {creations.map((creation, index)=> (
           <div key={index} className='relative group inline-block pl-3 pt-3 w-full sm:max-w-1/2 lg:max-w-1/3'>
 
-            {selectionMode && creation.user_id === user?.id && (
-              <div className="relative z-20 flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedIds.includes(String(creation.id))}
-                  onChange={() => toggleSelected(String(creation.id))}
-                  className='cursor-pointer'
-                />
-
-                <button
-                  type="button"
-                  onClick={() => deleteCreations([creation.id])}
-                  className="text-fuchsia-800 cursor-pointer"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            )}
 
             <img src={creation.content} alt="" className='w-full h-full object-cover rounded-lg'/>
 
