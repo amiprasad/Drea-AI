@@ -1,5 +1,7 @@
 # Drea AI ✨
 
+Live demo: https://drea-ai.vercel.app/
+
 An AI creation studio for writing, image generation, image editing, and resume feedback, all in one authenticated workspace.
 
 ## Features
